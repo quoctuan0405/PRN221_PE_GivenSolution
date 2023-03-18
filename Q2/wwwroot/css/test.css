@@ -1,0 +1,25 @@
+﻿body {
+
+}
+
+.container {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: start;
+}
+
+.container .producers {
+    width: 200px;
+    display: flex;
+    flex-flow: column wrap;
+}
+
+.container .producers a {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.container table {
+    flex: 1;
+}

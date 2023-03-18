@@ -1,0 +1,109 @@
+﻿@page
+@model Q2.Pages.IndexModel
+@{
+}
+
+<h1>ListMovie</h1>
+
+<div class="container">
+    <div class="producers">
+        <p style="font-weight: bold; margin: 0">Producers</p>
+        @foreach(var item in Model.Producers)
+        {
+            <a 
+                asp-page="./Index" 
+                asp-route-producerId="@item.Id" 
+            >
+                @if (item.Id == Model.ProducerId)
+                {
+                    <b>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </b>
+                } 
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.Name)
+                }
+            </a>
+        }
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].ReleaseDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].Language)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].Director)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].Producer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].Stars)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Movie)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReleaseDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Language)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Director.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Producer.Name)
+                    </td>
+                    <td>
+                        @foreach (var star in item.Stars)
+                        {
+                            <span>@star.FullName</span>
+                        }
+                    </td>
+                    <td>
+                        @*<a asp-page="./Delete" asp-route-id="@item.Id" asp-route-producerId="@Model.ProducerId">Delete</a>*@
+                        <a href="javascript:void(0)" onclick="deleteMovie(@item.Id)">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<link rel="stylesheet" href="~/css/test.css"/>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("/moviehub").build();
+    connection.start();
+
+    function deleteMovie(movieId) {
+        connection.invoke("DeleteMovieAsync", movieId);
+    }
+
+    connection.on("DeletedMovieId", (movieId) => {
+        location.reload();
+    })
+</script>
